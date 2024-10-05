@@ -1,0 +1,152 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Class representing a process
+class Process {
+public:
+    string process_id;
+    int execution_time;
+    int remaining_time;
+
+    Process* next;
+
+    Process(string id, int time) {
+        this->process_id = id;
+        this->execution_time = time;
+        this->remaining_time = time;
+        next = nullptr;
+    }
+};
+
+// Class representing the circular linked list for process scheduling
+class Scheduler {
+private:
+    Process* head;
+    int time_interval;
+    int cycle_count;
+
+public:
+    Scheduler(int slice) {
+        head = nullptr;
+        time_interval = slice;
+        cycle_count = 0;
+    }
+
+    // Add a process to the scheduler
+    void addProcess(string id, int time) {
+        Process* newProcess = new Process(id, time);
+
+        if (!head) {
+            head = newProcess;
+            head->next = head;
+        }
+        else {
+            Process* temp = head;
+            while (temp->next != head) {
+                temp = temp->next;
+            }
+            temp->next = newProcess;
+            newProcess->next = head;
+        }
+
+        cout << "New process added: " << id << " (Remaining: " << time << ")" << endl;
+    }
+
+    // Remove a process that has finished execution
+    void removeProcess(Process* to_remove) {
+        if (head == head->next) {
+            delete head;
+            head = nullptr;
+        }
+        else {
+            Process* temp = head;
+            while (temp->next != to_remove) {
+                temp = temp->next;
+            }
+
+            if (to_remove == head) {
+                temp->next = head->next;
+                head = head->next;
+            }
+            else {
+                temp->next = to_remove->next;
+            }
+
+            delete to_remove;
+        }
+    }
+
+    // Function to simulate process scheduling
+    void schedule() {
+        if (!head) return;
+
+        Process* current = head;
+
+        while (head) {
+            cycle_count++;
+            cout << "\nCycle " << cycle_count << ": Running process " << current->process_id << endl;
+
+            if (current->remaining_time <= time_interval) {
+                cout << current->process_id << " completes execution.\n";
+                Process* completed = current;
+                current = current->next;
+                removeProcess(completed);
+            }
+            else {
+                current->remaining_time -= time_interval;
+                cout << current->process_id << " (Remaining time: " << current->remaining_time << ")\n";
+                current = current->next;
+            }
+
+            // Handle case where the process list is empty
+            if (head == nullptr) {
+                cout << "All processes have been completed.\n";
+                break;
+            }
+        }
+    }
+
+    // Display the current state of processes
+    void displayProcesses() {
+        if (!head) {
+            cout << "No processes available.\n";
+            return;
+        }
+
+        Process* temp = head;
+        do {
+            cout << "Process " << temp->process_id << " (Remaining time: " << temp->remaining_time << ")\n";
+            temp = temp->next;
+        } while (temp != head);
+    }
+};
+
+int main() {
+    int quantum_time;
+    cout << " Enter CPU Time per Process per Cycle: ";
+    cin >> quantum_time;
+
+    Scheduler scheduler(quantum_time);
+
+    // Adding initial processes
+    scheduler.addProcess("P1", 10);
+    scheduler.addProcess("P2", 5);
+    scheduler.addProcess("P3", 8);
+
+    cout << "\nInitial Processes:\n";
+    scheduler.displayProcesses();
+
+    // Start scheduling
+    cout << "\nStarting process scheduling...\n";
+    scheduler.schedule();
+
+    // Simulate a new process arriving
+    cout << "\nNew process P4 arriving...\n";
+    scheduler.addProcess("P4", 9);
+
+    // Resume scheduling
+    scheduler.schedule();
+
+    return 0;
+}
