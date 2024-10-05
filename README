@@ -1,1 +1,35 @@
+Problem 1: Simple Process Scheduling Algorithm
+Design and Implement a CPU Process Scheduling Algorithm using a Linked List. Processes will be represented as nodes in the list, and the scheduling algorithm should cycle through the processes, assigning CPU time to each process until all processes have completed their execution. 
+Task: 
+•	Each process should have the following attributes: process_id, execution_time, and remaining_time.
+•	The scheduler assigns a fixed amount of CPU time to each process in each cycle. After the time is assigned, the process's remaining_time will be reduced by that amount.
+•	If a process completes its execution (i.e., remaining_time becomes 0), it should be removed from the circular linked list.
+•	The system should display the state of processes after each cycle, indicating which process is running and its remaining time.
+•	Show the state of the system after each cycle.
+Your system should simulate a scenario where a new process can arrive at any time. For example, the program should handle an event that inserts a new process into the list while the scheduler is running.
+
+Approach:
+•	Process Class: Represents a process with attributes process_id, execution_time, remaining_time, and a pointer to the next process.
+•	Scheduler Class: Manages the circular linked list of processes and handles scheduling, process addition, and removal.
+•	addProcess: Adds a new process to the circular list.
+•	removeProcess: Removes a process that has completed execution from the list.
+•	schedule: Simulates the round-robin scheduling, reducing each process's remaining time and removing completed processes.
+•	displayProcesses: Displays the current state of all processes in the list.
+
+Steps:
+•	Initialize Scheduler: The scheduler is initialized with a fixed quantum time.
+•	Add Processes: Processes are added to the list with a specified execution time.
+•	Start Scheduling: The scheduler runs in cycles, giving each process CPU time and removing it when finished.
+•	Dynamic Process Addition: New processes can be added while the scheduler is running.
+
+Assumption:
+• Fixed CPU Time Slice: Each process is given a fixed amount of CPU time per cycle, known as the quantum which the user will provide. 
+• Unique Process IDs: Each process has a unique identifier.
+• Circular Linked List: The processes are managed in a circular linked list, meaning after the last process in the list, the scheduler moves back to the first process.
+
+Challenges Faced: 
+• Circular Linked List Management: Properly managing the circular structure of the linked list, ensuring the head and tail pointers are updated correctly after process deletion.
+• Process Removal: Handling process removal dynamically while traversing the list without breaking the circular structure.
+• Dynamic Process Addition: Ensuring new processes are added to the list without disrupting the ongoing scheduling.
+• Display and Debugging: Printing the current state of processes after each scheduling cycle to track the system's progress.
 
